@@ -4,17 +4,28 @@ import java.util.Scanner;
 public class main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+
+        //Хранит все прочитанные отчеты
         ArrayList<MonthlyReport> monthlyReports = new ArrayList<>();
-        ArrayList<YearlyReport> yearlyReports = new ArrayList<>();
+        ArrayList<YearlyReport> yearlyReports   = new ArrayList<>();
+        boolean monthReportSaved = false;
+        boolean yearReportSaved  = false;
+
         int userInput = -1;
         while (userInput != 0) {
             printMenu();
             userInput = scanner.nextInt();
             if (userInput == 1) {
                 monthlyReports = MonthlyReport.readReports();
+                monthReportSaved = true;
             } else if (userInput == 2) {
                 yearlyReports = YearlyReport.readReports();
+                yearReportSaved = true;
             } else if (userInput == 3){
+                if (!monthReportSaved || !yearReportSaved) {
+                    System.out.println("Прежде чем сверить отчеты, их необходимо прочитать");
+                    continue;
+                }
 
             } else if (userInput == 4) {
                 MonthlyReport.showReports(monthlyReports);

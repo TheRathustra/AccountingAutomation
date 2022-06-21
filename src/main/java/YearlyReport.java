@@ -1,11 +1,14 @@
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class YearlyReport {
-
+    int year;
     ArrayList<YearlyRecord> yearlyRecords;
 
     public YearlyReport() {
-        this.yearlyRecords = yearlyRecords = new ArrayList<>();
+        year = 0;
+        yearlyRecords = yearlyRecords = new ArrayList<>();
     }
 
     public static ArrayList<YearlyReport> readReports() {
@@ -19,6 +22,7 @@ public class YearlyReport {
                 continue;
             }
             YearlyReport yearlyReport = new YearlyReport();
+            yearlyReport.year = 2020 + j;
             yearlyReports.add(yearlyReport);
             String[] lines = content.split("\n");
             for (int i = 1; i < lines.length; i++) {
@@ -36,11 +40,41 @@ public class YearlyReport {
         return yearlyReports;
     }
 
+    public void printReport() {
+        HashMap<Integer, Integer> yearSums = new HashMap<>();
+        int profit = 0;
+        int expense = 0;
+        for (YearlyRecord yearlyRecord: yearlyRecords) {
+            int amount = 0;
+            if (yearSums.containsKey(yearlyRecord.month)) {
+                amount = yearSums.get(yearlyRecord.month);
+            }
+            if (yearlyRecord.isExpense) {
+                amount -= yearlyRecord.amount;
+                expense += yearlyRecord.amount;
+            } else {
+                amount += yearlyRecord.amount;
+                profit += yearlyRecord.amount;
+            }
+            yearSums.put(yearlyRecord.month, amount);
+        }
+
+        String answer = " " + year + " Средний расход за все месяцы в году: " +
+                expense/12 + " Средний доход за все месяцы в году: " + profit/12 + System.lineSeparator();
+        for (Map.Entry<Integer, Integer> entry : yearSums.entrySet()) {
+            answer = answer + entry.getKey() + " " + entry.getValue() + System.lineSeparator();
+        }
+
+        System.out.println(answer);
+
+    }
+
     public static void showReports(ArrayList<YearlyReport> yearlyReports) {
         for (YearlyReport yearlyReport: yearlyReports) {
             for (YearlyRecord yearlyRecord: yearlyReport.yearlyRecords) {
                 System.out.println(yearlyRecord);
             }
+            yearlyReport.printReport();
         }
     }
 }
