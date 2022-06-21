@@ -1,0 +1,7 @@
+month;amount;is_expense;
+1;100000;false;
+1;30000;true;
+2;321690;false;
+2;130000;true;
+3;999999;true;
+3;999999;false;
