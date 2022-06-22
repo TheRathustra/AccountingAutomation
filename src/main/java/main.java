@@ -1,36 +1,30 @@
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class main {
     public static void main(String[] args) {
+
+        AccountingUtils utils = new AccountingUtils();
+
         Scanner scanner = new Scanner(System.in);
-
-        //Хранит все прочитанные отчеты
-        ArrayList<MonthlyReport> monthlyReports = new ArrayList<>();
-        ArrayList<YearlyReport> yearlyReports   = new ArrayList<>();
-        boolean monthReportSaved = false;
-        boolean yearReportSaved  = false;
-
         int userInput = -1;
         while (userInput != 0) {
             printMenu();
             userInput = scanner.nextInt();
             if (userInput == 1) {
-                monthlyReports = MonthlyReport.readReports();
-                monthReportSaved = true;
+                MonthReport.readReports(utils);
             } else if (userInput == 2) {
-                yearlyReports = YearlyReport.readReports();
-                yearReportSaved = true;
+                YearReport.readReports(utils);
             } else if (userInput == 3){
-                if (!monthReportSaved || !yearReportSaved) {
+                if (!utils.monthReportsSaved || !utils.yearReportsSaved) {
                     System.out.println("Прежде чем сверить отчеты, их необходимо прочитать");
                     continue;
                 }
 
+
             } else if (userInput == 4) {
-                MonthlyReport.showReports(monthlyReports);
+                MonthReport.showReports(utils.monthReports);
             } else if (userInput == 5) {
-                YearlyReport.showReports(yearlyReports);
+                YearReport.showReports(utils.yearReports);
             } else if (userInput == 0) {
                 break;
             } else {
