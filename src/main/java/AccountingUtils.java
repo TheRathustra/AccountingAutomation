@@ -21,7 +21,6 @@ public class AccountingUtils {
 
     public ArrayList<ReportFile>  readFiles(String typeOfReport) {
 
-            //годовой или месячный / год / строка данных файла
             ArrayList<ReportFile> reportFiles = new ArrayList<>();
 
             File dir = new File("src/main/resources");
@@ -64,7 +63,7 @@ public class AccountingUtils {
         try {
             return Files.readString(path);
         } catch (IOException e) {
-            //System.out.println("Невозможно прочитать файл с отчётом. Возможно, файл не находится в нужной директории.");
+            System.out.println("Невозможно прочитать файл с отчётом. Возможно, файл не находится в нужной директории.");
             return null;
         }
     }
@@ -72,20 +71,31 @@ public class AccountingUtils {
     public static void dataReconciliation(ArrayList<MonthReport> monthReports, ArrayList<YearReport> yearReports) {
 
         for (YearReport yearReport : yearReports) {
-            HashMap<Integer, HashMap<Boolean, Integer>> yearTotal = new HashMap<Integer, HashMap<Boolean, Integer>>();
-            for (YearRecord yearRecord : yearReport.yearRecords) {
-                int amount = yearRecord.amount;
-                if (!yearTotal.containsKey(yearRecord.month)) {
-                    yearTotal.put(yearRecord.month, new HashMap<>());
-                } else {
-                    if (!yearTotal.get(yearRecord.month).containsKey(yearRecord.isExpense)) {
-                        yearTotal.get(yearRecord.month).put(yearRecord.isExpense, 0);
+            HashMap<Integer, HashMap<Boolean, Integer>> yearTotal = yearReport.totalSumPerMonth();
+
+            for (MonthReport report : monthReports) {
+                if (report.year == yearReport.year) {
+                    if (!yearTotal.containsKey(report.month)) {
+                        System.out.println("В годовом отчете за " + yearReport.year +
+                                " отсутствуют данные за месяце " + report.month);
+                        continue;
+                    }
+
+                    HashMap<Boolean, Integer> monthTotalSums = report.getTotalSums();
+                    HashMap<Boolean, Integer> monthSumsYearReport = yearTotal.get(report.month);
+                    if (monthTotalSums.get(true) != monthSumsYearReport.get(true)) {
+                        System.out.println("В годовом отчете за " + yearReport.year +
+                                " есть расхождение в месяце " + report.month);
+                        continue;
+                    }
+                    if (monthTotalSums.get(false) != monthSumsYearReport.get(false)) {
+                        System.out.println("В годовом отчете за " + yearReport.year +
+                                " есть расхождение в месяце " + report.month);
+                        continue;
                     }
                 }
-
-                yearTotal.get(yearRecord.month).put(yearRecord.isExpense,
-                        yearTotal.get(yearRecord.month).get(yearRecord.isExpense) + amount);
             }
+
         }
 
     }

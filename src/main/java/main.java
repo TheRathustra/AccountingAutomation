@@ -19,11 +19,18 @@ public class main {
                     System.out.println("Прежде чем сверить отчеты, их необходимо прочитать");
                     continue;
                 }
-
-
+                AccountingUtils.dataReconciliation(utils.monthReports, utils.yearReports);
             } else if (userInput == 4) {
+                if (!utils.monthReportsSaved) {
+                    System.out.println("Прежде чем выводить отчеты, их необходимо прочитать");
+                    continue;
+                }
                 MonthReport.showReports(utils.monthReports);
             } else if (userInput == 5) {
+                if (!utils.yearReportsSaved) {
+                    System.out.println("Прежде чем выводить отчеты, их необходимо прочитать");
+                    continue;
+                }
                 YearReport.showReports(utils.yearReports);
             } else if (userInput == 0) {
                 break;

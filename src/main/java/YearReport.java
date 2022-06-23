@@ -12,6 +12,8 @@ public class YearReport {
     }
 
     public static void readReports(AccountingUtils utils) {
+
+        utils.yearReportsSaved = true;
         utils.yearReports.clear();
         ArrayList<YearReport> yearReports = utils.yearReports;
         ArrayList<ReportFile> yearReportFiles = utils.readFiles("y");
@@ -60,7 +62,7 @@ public class YearReport {
         String answer = "год: " + year + " Средний расход за все месяцы в году: " +
                 expense/12 + " Средний доход за все месяцы в году: " + profit/12 + System.lineSeparator();
         for (Map.Entry<Integer, Integer> entry : yearSums.entrySet()) {
-            answer = answer + entry.getKey() + " " + entry.getValue() + System.lineSeparator();
+            answer = answer + "месяц " + entry.getKey() + " прибыль " + entry.getValue() + System.lineSeparator();
         }
 
         System.out.println(answer);
@@ -69,10 +71,35 @@ public class YearReport {
 
     public static void showReports(ArrayList<YearReport> yearReports) {
         for (YearReport yearReport : yearReports) {
+            /*
             for (YearRecord yearRecord : yearReport.yearRecords) {
                 System.out.println(yearRecord);
             }
+             */
             yearReport.printReport();
         }
     }
+
+    public HashMap<Integer, HashMap<Boolean, Integer>> totalSumPerMonth() {
+
+        HashMap<Integer, HashMap<Boolean, Integer>> yearSums = new HashMap<>();
+
+        for (YearRecord yearRecord : yearRecords) {
+            HashMap<Boolean, Integer> monthSums = new HashMap<>();
+            if (yearSums.containsKey(yearRecord.month)) {
+                monthSums = yearSums.get(yearRecord.month);
+            }
+            int amount = 0;
+            if (monthSums.containsKey(yearRecord.isExpense)) {
+                amount = monthSums.get(yearRecord.isExpense);
+            }
+            amount += yearRecord.amount;
+            monthSums.put(yearRecord.isExpense, amount);
+            yearSums.put(yearRecord.month, monthSums);
+        }
+
+        return yearSums;
+
+    }
+
 }

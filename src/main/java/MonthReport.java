@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MonthReport {
     int year;
@@ -13,6 +14,7 @@ public class MonthReport {
 
     public static void readReports(AccountingUtils utils) {
 
+        utils.monthReportsSaved = true;
         utils.monthReports.clear();
         ArrayList<MonthReport> monthReports = utils.monthReports;
 
@@ -68,12 +70,35 @@ public class MonthReport {
 
     }
 
+    public HashMap<Boolean, Integer> getTotalSums() {
+        HashMap<Boolean, Integer> totalSums = new HashMap<>();
+
+        int profit = 0;
+        int expense = 0;
+
+        for (MonthRecord monthRecord : monthRecords) {
+            int amount = monthRecord.quantity * monthRecord.sumOfOne;
+            if (monthRecord.isExpense) {
+                expense += amount;
+            } else {
+                profit += amount;
+            }
+        }
+
+        totalSums.put(true, expense);
+        totalSums.put(false, profit);
+
+        return totalSums;
+    }
+
     public static void showReports(ArrayList<MonthReport> monthReports) {
         for (MonthReport monthReport : monthReports) {
+            /*
             for (int i = 0; i < monthReport.monthRecords.size(); i++) {
                 MonthRecord monthRecord = monthReport.monthRecords.get(i);
                 System.out.println(monthRecord);
             }
+             */
             monthReport.printReport();
         }
     }
